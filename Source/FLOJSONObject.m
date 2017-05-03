@@ -109,14 +109,6 @@
     return self.underlyingObject;
 }
 
-- (NSMutableString *)mutableString {
-    if (![self verifyClass:[NSMutableString class]]) {
-        return nil;
-    }
-    
-    return self.underlyingObject;
-}
-
 - (NSNumber *)number {
     if (![self verifyClass:[NSNumber class]]) {
         return nil;

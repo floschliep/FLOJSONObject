@@ -15,7 +15,6 @@
 @property (nullable, readonly) NSDictionary<NSString *, FLOJSONObject *> *dictionary;
 @property (nullable, readonly) NSMutableDictionary<NSString *, FLOJSONObject *> *mutableDictionary;
 @property (nullable, readonly) NSString *string;
-@property (nullable, readonly) NSMutableString *mutableString;
 @property (nullable, readonly) NSNumber *number;
 @property (nullable, readonly) NSNull *null;
 
