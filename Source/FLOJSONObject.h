@@ -10,13 +10,13 @@
 
 @interface FLOJSONObject : NSObject
 
-@property (nullable, readonly) NSArray<FLOJSONObject *> *array;
-@property (nullable, readonly) NSMutableArray<FLOJSONObject *> *mutableArray;
-@property (nullable, readonly) NSDictionary<NSString *, FLOJSONObject *> *dictionary;
-@property (nullable, readonly) NSMutableDictionary<NSString *, FLOJSONObject *> *mutableDictionary;
-@property (nullable, readonly) NSString *string;
-@property (nullable, readonly) NSNumber *number;
-@property (nullable, readonly) NSNull *null;
+@property (nullable, nonatomic, readonly) NSArray<FLOJSONObject *> *array;
+@property (nullable, nonatomic, readonly) NSMutableArray<FLOJSONObject *> *mutableArray;
+@property (nullable, nonatomic, readonly) NSDictionary<NSString *, FLOJSONObject *> *dictionary;
+@property (nullable, nonatomic, readonly) NSMutableDictionary<NSString *, FLOJSONObject *> *mutableDictionary;
+@property (nullable, nonatomic, readonly) NSString *string;
+@property (nullable, nonatomic, readonly) NSNumber *number;
+@property (nullable, nonatomic, readonly) NSNull *null;
 
 + (nullable instancetype)objectWithData:(NSData * _Nonnull)data options:(NSJSONReadingOptions)options error:(NSError * _Nullable * _Nullable)error;
 - (nullable instancetype)initWithData:(NSData * _Nonnull)data options:(NSJSONReadingOptions)options error:(NSError * _Nullable * _Nullable)error NS_DESIGNATED_INITIALIZER;

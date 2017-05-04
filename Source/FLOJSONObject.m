@@ -10,9 +10,10 @@
 
 #pragma mark - Class Extension
 
-@interface FLOJSONObject ()
-
-@property (strong) id underlyingObject;
+@interface FLOJSONObject () {
+    id _underlyingObject;
+    id _mappedObject;
+}
 
 - (instancetype)initWithUnderlyingObject:(id)object NS_DESIGNATED_INITIALIZER;
 
@@ -66,36 +67,58 @@
 #pragma mark - Properties
 
 - (NSArray *)array {
+    if ([_mappedObject isKindOfClass:[NSMutableArray class]]) {
+        _mappedObject = [_mappedObject copy];
+        return _mappedObject;
+    }
+    if ([_mappedObject isKindOfClass:[NSArray class]]) {
+        return _mappedObject;
+    }
     if (![self verifyClass:[NSArray class]]) {
         return nil;
     }
-    
-    return [(NSArray *)self.underlyingObject flo_map:^id(id object) {
+    _mappedObject = [(NSArray *)_underlyingObject flo_map:^id(id object) {
         return [[FLOJSONObject alloc] initWithUnderlyingObject:object];
     }];
+    _underlyingObject = nil;
+    
+    return _mappedObject;
 }
 
 - (NSMutableArray *)mutableArray {
-    if (![self verifyClass:[NSMutableArray class]]) {
-        return nil;
+    if (!_mappedObject || ![_mappedObject isKindOfClass:[NSArray class]]) {
+        if (![self verifyClass:[NSMutableArray class]]) {
+            return nil;
+        }
     }
     
     return [self.array mutableCopy];
 }
 
 - (NSDictionary<NSString *,FLOJSONObject *> *)dictionary {
+    if ([_mappedObject isKindOfClass:[NSMutableDictionary class]]) {
+        _mappedObject = [_mappedObject copy];
+        return _mappedObject;
+    }
+    if ([_mappedObject isKindOfClass:[NSDictionary class]]) {
+        return _mappedObject;
+    }
     if (![self verifyClass:[NSDictionary class]]) {
         return nil;
     }
-    
-    return [(NSDictionary *)self.underlyingObject flo_mapObjects:^id(NSString *key, id obj) {
+    _mappedObject = [(NSDictionary *)_underlyingObject flo_mapObjects:^id(NSString *key, id obj) {
         return [[FLOJSONObject alloc] initWithUnderlyingObject:obj];
     }];
+    _underlyingObject = nil;
+    
+    return _mappedObject;
 }
 
 - (NSMutableDictionary<NSString *,FLOJSONObject *> *)mutableDictionary {
-    if (![self verifyClass:[NSMutableDictionary class]]) {
-        return nil;
+    if (!_mappedObject || ![_mappedObject isKindOfClass:[NSDictionary class]]) {
+        if (![self verifyClass:[NSMutableDictionary class]]) {
+            return nil;
+        }
     }
     
     return [self.dictionary mutableCopy];
@@ -106,7 +129,7 @@
         return nil;
     }
     
-    return self.underlyingObject;
+    return _underlyingObject;
 }
 
 - (NSNumber *)number {
@@ -114,7 +137,7 @@
         return nil;
     }
     
-    return self.underlyingObject;
+    return _underlyingObject;
 }
 
 - (NSNull *)null {
@@ -122,13 +145,13 @@
         return nil;
     }
     
-    return self.underlyingObject;
+    return _underlyingObject;
 }
 
 #pragma mark - Helpers
 
 - (BOOL)verifyClass:(Class)class {
-    return [self.underlyingObject isKindOfClass:class];
+    return [_underlyingObject isKindOfClass:class];
 }
 
 @end
@@ -139,9 +162,9 @@
 
 - (id)flo_map:(id (^)(id))predicate {
     NSMutableArray *mappedArray = [NSMutableArray arrayWithCapacity:self.count];
-    for (id object in self) {
-        [mappedArray addObject:predicate(object)];
-    }
+    [self enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [mappedArray addObject:predicate(obj)];
+    }];
     
     return [mappedArray copy];
 }
@@ -152,9 +175,9 @@
 
 - (id)flo_mapObjects:(id (^)(id, id))predicate {
     NSMutableDictionary *mappedDict = [NSMutableDictionary dictionaryWithCapacity:self.count];
-    for (NSString *key in self.allKeys) {
+    [self enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         mappedDict[key] = predicate(key, self[key]);
-    }
+    }];
     
     return [mappedDict copy];
 }
