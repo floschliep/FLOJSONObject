@@ -8,13 +8,13 @@
 The `FLOJSONObject` class allows you to access JSON objects using the following properties:
 
 ```
-@property (nullable, readonly) NSArray<FLOJSONObject *> *array;
-@property (nullable, readonly) NSMutableArray<FLOJSONObject *> *mutableArray;
-@property (nullable, readonly) NSDictionary<NSString *, FLOJSONObject *> *dictionary;
-@property (nullable, readonly) NSMutableDictionary<NSString *, FLOJSONObject *> *mutableDictionary;
-@property (nullable, readonly) NSString *string;
-@property (nullable, readonly) NSNumber *number;
-@property (nullable, readonly) NSNull *null;
+@property (nullable, nonatomic, readonly) NSArray<FLOJSONObject *> *array;
+@property (nullable, nonatomic, readonly) NSMutableArray<FLOJSONObject *> *mutableArray;
+@property (nullable, nonatomic, readonly) NSDictionary<NSString *, FLOJSONObject *> *dictionary;
+@property (nullable, nonatomic, readonly) NSMutableDictionary<NSString *, FLOJSONObject *> *mutableDictionary;
+@property (nullable, nonatomic, readonly) NSString *string;
+@property (nullable, nonatomic, readonly) NSNumber *number;
+@property (nullable, nonatomic, readonly) NSNull *null;
 ```
 
 When accessing a property, the class checks whether the JSON object matches the desired type or not and returns either the object or `nil`.
