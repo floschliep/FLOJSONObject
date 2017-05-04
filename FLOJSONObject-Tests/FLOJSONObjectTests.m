@@ -138,6 +138,32 @@
     XCTAssertEqualObjects(values[2].number, @3);
 }
 
+- (void)testPerformance {
+    NSMutableArray *testArray = [NSMutableArray arrayWithCapacity:10000];
+    for (NSInteger i = 0; i < 10000; i++) {
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:100];
+        for (NSInteger i = 0; i < 100; i++) {
+            dict[@(i).stringValue] = @"test";
+        }
+        [testArray addObject:dict];
+    }
+    NSData *data = [self jsonDataWithObject:testArray];
+    FLOJSONObject *object = [FLOJSONObject objectWithData:data options:kNilOptions error:nil];
+    XCTAssertNotNil(object);
+    
+    [self measureBlock:^{
+        XCTAssertEqual(object.array.count, 10000);
+        for (NSInteger i = 0; i < object.array.count; i++) {
+            FLOJSONObject *value = object.array[i];
+            XCTAssertEqual(value.dictionary.count, 100);
+            for (NSString *key in value.dictionary.allKeys) {
+                FLOJSONObject *entry = value.dictionary[key];
+                XCTAssertNotNil(entry.string);
+            }
+        }
+    }];
+}
+
 - (void)testFragments {
     NSData *stringData = [self jsonDataWithFragmentObject:@"foo"];
     FLOJSONObject *stringObject = [FLOJSONObject objectWithData:stringData options:NSJSONReadingAllowFragments error:nil];
